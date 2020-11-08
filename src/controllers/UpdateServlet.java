@@ -59,7 +59,8 @@ public class UpdateServlet extends HttpServlet {
             } else {
                 em.getTransaction().begin();
                 em.getTransaction().commit();
-                request.getSession().setAttribute("flush", "更新が完了しました。");
+//                request.getSession().setAttribute("flush", "更新が完了しました。");
+                request.setAttribute("flush", "更新が完了しました。");
                 em.close();
 
                 request.getSession().removeAttribute("message_id");

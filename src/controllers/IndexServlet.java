@@ -36,7 +36,9 @@ public class IndexServlet extends HttpServlet {
 	    EntityManager em = DBUtil.createEntityManager();
 
 	    int page = 1;
-	    try {
+        // 既に「いいね」済みかどうかのフラグを用意
+        Boolean like_flg = false;
+        try {
 	        page = Integer.parseInt(request.getParameter("page"));
 	    } catch(NumberFormatException e) {}
 
@@ -45,19 +47,20 @@ public class IndexServlet extends HttpServlet {
 	                                .setMaxResults(15)
 	                                .getResultList();
 
-	    long messages_count = (long)em.createNamedQuery("getMessagesCount", Long.class)
-	                                     .getSingleResult();
-
 	    em.close();
 
 	    request.setAttribute("messages", messages);
-	    request.setAttribute("messages_count", messages_count);
 	    request.setAttribute("page", page);
+	    request.setAttribute("flg", like_flg);
 
-	    if(request.getSession().getAttribute("flush") != null) {
-	        request.setAttribute("flush", request.getSession().getAttribute("flush"));
-	        request.getSession().removeAttribute("flush");
-	    }
+//	    if(request.getSession().getAttribute("flush") != null) {
+//	        request.setAttribute("flush", request.getSession().getAttribute("flush"));
+//	        request.getSession().removeAttribute("flush");
+//	    }
+          if(request.getParameter("flush") != null) {
+          request.setAttribute("flush", request.getParameter("flush"));
+          request.getSession().removeAttribute("flush");
+       }
 
 	    RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/messages/index.jsp");
 	    rd.forward(request, response);
